@@ -1,0 +1,31 @@
+.single{
+   display: flex;
+   flex-direction: column;
+   padding: 10px 5px;
+   max-width: 400px;
+   height: 400px;
+   margin: 100px auto;
+   text-align: center;
+   background: rgb(218, 216, 216);
+   border: 1px solid black;
+   &__id{
+      font-size: 20px;
+      margin-bottom: 20px;
+   }
+   &__album{
+      font-size: 20px;
+      margin-bottom: 40px;
+   }
+   &__title{
+      text-transform: uppercase;
+      font-size: 25px;
+      height: 180px;
+   }
+   &__photo{
+      font-size: 20px;
+      margin-bottom: 10px;
+   }
+   &__button{
+      
+   }
+}

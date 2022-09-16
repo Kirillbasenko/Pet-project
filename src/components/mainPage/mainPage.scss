@@ -1,0 +1,77 @@
+.char {
+    
+    &__content {
+        height: 140px;
+    }
+    &__grid {
+        padding-left: 0;
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        column-gap: 20px;
+        row-gap: 30px;
+    }
+    &__item {
+        text-align: center;
+        justify-content: center;
+        display: flex;
+        flex-direction: column;
+        background-color: rgb(243, 242, 242);
+        box-shadow: 5px 5px 10px rgba(0, 0, 0, .25);
+        padding: 10px;
+        transition: 0.3s transform;
+        img {
+            margin: 0 auto;
+            width: 200px;
+            height: 150px;
+            object-fit: cover;
+        }
+        &:hover {
+            box-shadow: 0 5px 20px rgb(141, 14, 14);
+            transform: translateY(-8px);
+        }
+    }
+    &__name {
+        font-weight: bold;
+        font-size: 16px;
+        line-height: 29px;
+        text-transform: uppercase;
+        color: black;
+    }
+    &__album{
+        font-size: 18px;
+    }
+    &__button{
+        text-transform: uppercase;
+        margin-top: 10px;
+        font-size: 14px;
+        padding: 5px;
+        text-decoration: none;
+        color: inherit;
+        border-radius: 10px;
+        border: 1px solid black;
+        background: rgb(199, 198, 198);
+        &:hover{
+            background: rgb(131, 130, 130);
+            color: inherit;
+        }
+    }
+    &__add{
+        text-transform: uppercase;
+        margin-left: 20px;
+        font-size: 14px;
+        padding: 5px;
+        border-radius: 10px;
+        border: 1px solid black;
+        background: rgb(199, 198, 198);
+        &:hover{
+            background: rgb(131, 130, 130);
+        }
+    }
+}
+
+.active{
+    background: rgb(253, 109, 109);
+}
