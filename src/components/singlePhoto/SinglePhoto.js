@@ -5,17 +5,29 @@ import {useEffect} from 'react';
 import { useDispatch, useSelector } from "react-redux";
 
 import Spinner from '../spinner/Spinner';
-import {useHttp} from "../../hooks/http.hook"
-import {getPhoto} from "./photoSlice"
+import { getDocs, collection} from "firebase/firestore";
+import { db } from "../../fireBase"
+import {getPhoto, saveMassage} from "./photoSlice"
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
 const SinglePhoto = () => {
    const {photoId} = useParams()
    const {photo, photoLoadingStatus} = useSelector(state => state.photo)
+   
+   
    const dispatch = useDispatch()
 
+   const readMessage = async () => {
+      const querySnapshot = await getDocs(collection(db, "photos"));
+      querySnapshot.forEach((doc) => {
+      console.log(doc.data());
+   });
+   } 
 
    useEffect(() => {
+      
+      dispatch(saveMassage(photo))
+      readMessage()
       dispatch(getPhoto(photoId))
    }, [])
 

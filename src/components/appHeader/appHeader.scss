@@ -1,5 +1,8 @@
 .header{
    color: black;
+   position: sticky;
+   top: 0;
+   left: 0;
    &__link{
       font-size: 25px;
       text-decoration: none;
@@ -22,4 +25,12 @@
    &:hover{
       background: rgb(131, 130, 130);
    }
+}
+
+.catalog{
+   margin-right: 5px;
+   padding: 5px;
+   border: none;
+   border-radius: 10px;
+   background: rgb(159, 159, 253);
 }

@@ -1,24 +1,42 @@
-import {useEffect} from 'react';
+import {useEffect, useState, useMemo} from 'react';
 import Spinner from '../spinner/Spinner';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ErrorMessage from '../errorMessage/ErrorMessage';
-import {useHttp} from "../../hooks/http.hook"
-import {getAllPhotos} from "./photosSlice"
+import {readMessage} from "./photosSlice"
 import { useDispatch, useSelector } from "react-redux";
+import {createdFetched} from "./photosSlice"
 
 import "./mainPage.scss";
 
 const MainPage = () => {
-   const {photosList, photosLoadingStatus, term, filterPhotosList} = useSelector(state => state.photos)
-
+   const {photosList, photosLoadingStatus, filterPhotosList, createdPhotos, activeCatalog, term} = useSelector(state => state.photos)
+   const [item, setItem] = useState([])
+   let user = localStorage.getItem("user") 
    const dispatch = useDispatch()
-   //const {request} = useHttp()
+   let navigate = useNavigate()
+
+   const getPhotos = () => {
+      let items = []
+      photosList.forEach(doc => {
+         items.push(doc.data())
+      }) 
+      dispatch(createdFetched(items))
+   }
+   console.log(user);
+
+   if(user === "true"){
+         console.log("лох");
+   }else if(user === "false"){
+         navigate("../login", { replace: true })
+   }
 
    useEffect(() => {
-      dispatch(getAllPhotos())
+      dispatch(readMessage())
    }, [])
-
    
+   useEffect(() => {
+      getPhotos()
+   }, [photosList])
 
    if(photosLoadingStatus === "loading"){
       return <Spinner/>
@@ -58,11 +76,11 @@ const MainPage = () => {
                <li 
                   className="char__item"
                   key={item.id}>
+                     <img  src={item.src} alt={item.title}/>
                      <div className="char__content">
                         <div className="char__name">{item.title}</div>
-                        <div className="char__album">№{item.albumId}</div>
+                        <div className="char__album">№{item.album}</div>
                      </div>
-                     <img  src={item.thumbnailUrl} alt={item.title}/>
                      <div className='char__buttons'>
                         <Link to={`/${item.id}`} className="char__button">details</Link>
                         <button onClick={(e) => changeHeard(index)} className='char__add'>favorites</button>
@@ -75,13 +93,16 @@ const MainPage = () => {
                {items}
             </ul>
       )
-   }
+   } 
 
-   const items = renderItems(photosList)
+   const items = renderItems(createdPhotos)
    const filterItems = renderItems(filterPhotosList)
+   console.log(filterPhotosList);
    return(
-      <div className="char__list">
-            {term && filterItems ? filterItems : items}
+      <div className='main-back'>
+         <div className="char__list">
+               {term || activeCatalog ? filterItems : items}
+         </div>
       </div>
    )
 }

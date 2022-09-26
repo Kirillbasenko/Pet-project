@@ -1,5 +1,6 @@
 import photos from "../components/mainPage/photosSlice"
 import photo from "../components/singlePhoto/photoSlice"
+
 import { configureStore } from '@reduxjs/toolkit';
 
 const stringMiddleware = () => (next) => (action) => {

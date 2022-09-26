@@ -1,5 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {useHttp} from "../../hooks/http.hook"
+import { addDoc, getDocs, collection, getFirestore } from "firebase/firestore";
+import {app, db} from "../../fireBase"
+import { initializeApp } from 'firebase/app'; 
+import { array } from "prop-types";
 
 const initialState = {
    photo: [],
@@ -14,6 +18,53 @@ export const getPhoto = createAsyncThunk(
       return request(`https://jsonplaceholder.typicode.com/photos/${id}`)
    }
 )
+
+const firebaseConfig = {
+   apiKey: "AIzaSyDsb6Q4ukmOLZKFME82a3oFoRyjbBgEgd0",
+   authDomain: "petpr-b454c.firebaseapp.com",
+   projectId: "petpr-b454c",
+   storageBucket: "petpr-b454c.appspot.com",
+   messagingSenderId: "128429972629",
+   appId: "1:128429972629:web:cf228d84bfb6e2e4b2cf9c",
+   measurementId: "G-PDXDCT6SPF"
+   };
+
+export const saveMassage = createAsyncThunk(
+   "photo/savePhoto",
+   (item) => {
+      addDoc(collection(db, "photos"), {
+         ID: item.id,
+         album: item.albumId,
+         title: item.title,
+         url: item.url
+      });
+   }
+)
+
+export const saveMassages = createAsyncThunk(
+   "photo/savePhotos",
+   (arr) => {
+      arr.forEach(item => {
+         addDoc(collection(db, "photos"), {
+         ID: item.id,
+         album: item.albumId,
+         title: item.title,
+         url: item.url
+      });
+      })
+   }
+)
+
+/*export const readMassage = createAsyncThunk(
+   "photo/readPhoto",
+   ()  =>  {
+      const querySnapshot = getDocs(collection(db, "photos"))
+      console.log(querySnapshot);
+      querySnapshot.forEach((doc) => {
+      console.log(doc.data());
+      });
+   }
+)*/
 
 const photoSlice = createSlice({
    name: "photo",

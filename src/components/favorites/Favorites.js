@@ -43,8 +43,10 @@ const Favorites = (e) => {
    const filterItems = renderItems(filterFavorites) 
 
    return(
-      <div className="char__list">
-         {term && filterItems ? filterItems : items}
+      <div className="page-other">
+         <div className="char__list">
+            {term && filterItems ? filterItems : items}
+         </div>
       </div>
    )
 }
