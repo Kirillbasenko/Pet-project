@@ -2,6 +2,7 @@ import "./createElem.scss"
 import { useState, useRef, useEffect } from "react"
 import { addDoc, collection, getDocs} from "firebase/firestore";
 import {db} from "../../fireBase"
+import Spinner from '../spinner//Spinner';
 
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
@@ -16,7 +17,8 @@ const CreateElem = () => {
    const wrraper = useRef(null)
    const file = useRef(null)
    const id = useRef(null)
-   
+   const spinner = useRef(null)
+   const content = useRef(null)
 
    const douwload = async () => {
       let reader = new FileReader()
@@ -24,6 +26,17 @@ const CreateElem = () => {
       reader.onload = function (){
          setSrc(reader.result)
       }
+   }
+
+   const loading = () => {
+      spinner.current.style.display = "block"
+      content.current.style.display = "none"
+      const clear = () => {
+         spinner.current.style.display = "none"
+         content.current.style.display = "block"
+      }
+      const time = setTimeout(clear, 4000)
+      time()
    }
 
    const savePhoto = () => {
@@ -35,10 +48,12 @@ const CreateElem = () => {
          catalog: formik.values.catalog
       });
       formik.values.id = ""
-      setSrc("")
       formik.values.album = ""
       formik.values.title = ""
       formik.values.catalog = ""
+      setSrc("")
+      file.current.value = ""
+      loading()
    }
 
 /***********************************************Formik******************************************** */
@@ -63,8 +78,8 @@ const formik = useFormik({
 /************************************************************************************************* */
    return(
       <div className="page-other">
-         <div className="single">
-            <form className="content" onSubmit={formik.handleSubmit}>
+         <div className="single create">
+            <form ref={content} className="content" onSubmit={formik.handleSubmit}>
                <div>
                   <label htmlFor="text" className="id__label">ID:</label>
                   <input onChange={formik.handleChange}
@@ -110,8 +125,12 @@ const formik = useFormik({
                   
                </div>
                <input ref={file} onChange={() => douwload()} className="file" type="file" />
-               <button type="submit">Save</button>
+            <button className="creacte-button" type="submit">Save</button>
+            
             </form>
+            <div ref={spinner} className="spinner">
+               <Spinner/>
+            </div>
          </div>
          </div>
       )

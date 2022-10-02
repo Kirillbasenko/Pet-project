@@ -4,25 +4,21 @@ import Form from 'react-bootstrap/Form';
 import Navbar from 'react-bootstrap/Navbar';
 import { useDispatch, useSelector} from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { addDoc, collection, getFirestore } from "firebase/firestore"; 
-import { initializeApp } from 'firebase/app';
 import { GoogleAuthProvider, signOut, getAuth, signInWithPopup } from "firebase/auth";
-
+import {removeUser} from "../loginPage/userSlice"
 import "./appHeader.scss"
 
 import {filtersFetched, activeFilterChanged, filterABC, filterAlbum, activeCatalogChanged} from "../mainPage/photosSlice";
-import { useState } from 'react';
 
 
 function AppHeader() {
    let dispatch = useDispatch()
    let navigate = useNavigate()
-   let user = localStorage.getItem("user")
-   console.log(user);
-   
+   const user = localStorage.getItem("user")
 
    function signOutUser() {
       signOut(getAuth());
+      dispatch(removeUser())
       localStorage.setItem("user", false)
       navigate("../login", { replace: true })
    }

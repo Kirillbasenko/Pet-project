@@ -1,5 +1,6 @@
 import photos from "../components/mainPage/photosSlice"
 import photo from "../components/singlePhoto/photoSlice"
+import user from "../components/loginPage/userSlice"
 
 import { configureStore } from '@reduxjs/toolkit';
 
@@ -13,7 +14,7 @@ const stringMiddleware = () => (next) => (action) => {
 }
 
 const store = configureStore({
-   reducer: {photos, photo},
+   reducer: {photos, photo, user},
    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(stringMiddleware),
    devTools: process.env.NODE_ENV !== "production"
 })

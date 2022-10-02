@@ -41,8 +41,10 @@ export const saveMassages = createAsyncThunk(
 export const readMessage = createAsyncThunk(
    "photos/readMessages",
    () => {
+      
       const querySnapshot = getDocs(collection(db, "photos"))
       return querySnapshot
+      
    }
 )
 
@@ -61,7 +63,7 @@ const photosSlice = createSlice({
       filterAlbum: state => {
          //state.photosList = state.photosList.sort((a, b) => a.albumId > b.albumId ? 1 : -1);
          //state.favorites = state.favorites.sort((a, b) => a.albumId > b.albumId ? 1 : -1);
-         state.createdPhotos = state.createdPhotos.sort((a, b) => a.title > b.title ? 1 : -1)
+         state.createdPhotos = state.createdPhotos.sort((a, b) => a.album > b.album ? 1 : -1)
       },
       activeFilterChanged: (state, action) => {
                //state.filterPhotosList = state.photosList.filter(item => item.title.startsWith(state.term));

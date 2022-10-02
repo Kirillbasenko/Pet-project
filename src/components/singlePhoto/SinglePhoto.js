@@ -7,12 +7,13 @@ import { useDispatch, useSelector } from "react-redux";
 import Spinner from '../spinner/Spinner';
 import { getDocs, collection} from "firebase/firestore";
 import { db } from "../../fireBase"
-import {getPhoto, saveMassage} from "./photoSlice"
+import {saveMassage} from "./photoSlice"
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
 const SinglePhoto = () => {
    const {photoId} = useParams()
    const {photo, photoLoadingStatus} = useSelector(state => state.photo)
+   console.log(photo);
    
    
    const dispatch = useDispatch()
@@ -26,9 +27,9 @@ const SinglePhoto = () => {
 
    useEffect(() => {
       
-      dispatch(saveMassage(photo))
-      readMessage()
-      dispatch(getPhoto(photoId))
+      //dispatch(saveMassage(photo))
+      //readMessage()
+      //dispatch(getPhoto(photoId))
    }, [])
 
    if(photoLoadingStatus === "loading"){
@@ -40,10 +41,10 @@ const SinglePhoto = () => {
    const renderItem = (item) => {
       return(
          <div className="single">
+            <img src={item.src} alt={item.title} />
             <div className="single__id">ID: {item.id}</div>
-            <div className="single__album">Album: {item.albumId}</div>
+            <div className="single__album">Album: {item.album}</div>
             <div className="single__title">{item.title}</div>
-            <a className="single__photo" href={item.url}>{item.url}</a>
             <Link to="/" className="single__button">Back</Link>
          </div>
       )
@@ -51,9 +52,9 @@ const SinglePhoto = () => {
 
    const items = renderItem(photo)
    return(
-      <>
+      <div className="page-other">
          {items}
-      </>
+      </div>
    )
 }
 

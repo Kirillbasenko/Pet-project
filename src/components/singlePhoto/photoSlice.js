@@ -72,10 +72,9 @@ const photoSlice = createSlice({
    reducers: {
       photoFetching: state => {state.photoLoadingStatus = 'loading'},
       photoFetched: (state, action) => {
-               state.photoLoadingStatus = 'idle';
-               state.photo = action.payload
-            },
-      photoFetchingError: state => {state.photoLoadingStatus = 'error'}
+         state.photo = action.payload
+      },
+      photoFetchingError: state => {state.photoLoadingStatus = 'error'},
    },
    extraReducers: (builder) => {
       builder

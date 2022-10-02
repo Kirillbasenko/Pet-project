@@ -1,28 +1,24 @@
-import {useEffect, useState, useMemo} from 'react';
+import {useEffect, useRef} from 'react';
 import Spinner from '../spinner/Spinner';
 import { Link, useNavigate } from "react-router-dom";
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import {readMessage} from "./photosSlice"
 import { useDispatch, useSelector } from "react-redux";
 import {createdFetched} from "./photosSlice"
+import {photoFetched} from "../singlePhoto/photoSlice"
 
 import "./mainPage.scss";
 
 const MainPage = () => {
    const {photosList, photosLoadingStatus, filterPhotosList, createdPhotos, activeCatalog, term} = useSelector(state => state.photos)
-   const [item, setItem] = useState([])
+   const {token} = useSelector(state => state.user)
+   console.log(token);
+
    let user = localStorage.getItem("user") 
+   const favoriteBtn = useRef([])
+   favoriteBtn.current = []
    const dispatch = useDispatch()
    let navigate = useNavigate()
-
-   const getPhotos = () => {
-      let items = []
-      photosList.forEach(doc => {
-         items.push(doc.data())
-      }) 
-      dispatch(createdFetched(items))
-   }
-   console.log(user);
 
    if(user === "true"){
          console.log("лох");
@@ -30,13 +26,30 @@ const MainPage = () => {
          navigate("../login", { replace: true })
    }
 
+   const addBtn = (el) => {
+      if(el && !favoriteBtn.current.includes(el)){
+         favoriteBtn.current.push(el)
+      }
+      console.log(favoriteBtn.current);
+   }
+
+   const change = () =>  {
+      let items = []
+      photosList.forEach(doc => {
+         items.push(doc.data())
+      })
+      return items
+   }
+
+   useEffect(() => {
+      dispatch(createdFetched(change()))
+   }, [photosList])
+
    useEffect(() => {
       dispatch(readMessage())
    }, [])
+
    
-   useEffect(() => {
-      getPhotos()
-   }, [photosList])
 
    if(photosLoadingStatus === "loading"){
       return <Spinner/>
@@ -53,37 +66,55 @@ const MainPage = () => {
       }
    }
 
-   const changeHeard = (id) => {
+   const getActiveBtn = () => {
+      
+   }
+
+   const addFavorite = (id) => {
       let photos = getLocalPhotos()
-      const heard = document.querySelectorAll(".char__add")
-      let arr = photosList[id]
-      let user = photos.find(item => item.id === id + 1)
-      const index = photos.indexOf(user)
-      if(!user){
+      let arr = createdPhotos[id]
+      let users = photos.find(item => item.id === arr.id)
+      let index = photos.indexOf(users)
+////////////////////////////////////////////////////////////////////
+      if(!users){
          photos.push(arr)
-         heard[id].classList.add("active")
+         //favoriteBtn.current[id].classList.add("active")
       }else{
          photos.splice(index, 1)
-         heard[id].classList.remove("active")
+         //favoriteBtn.current[id].classList.remove("active")
       } 
-      
       localStorage.setItem("arr", JSON.stringify(photos))
+      //console.log(activeBtn);
+      //console.log(indexBtn);
+      let arrBtn = []
+      photos.forEach((item) => {
+         let index = createdPhotos.indexOf(item)
+         arrBtn.push(index)
+      })
+      console.log(arrBtn);
+      //console.log(indexBtn);
+      //console.log(id);
+      //indexBtn.current.forEach(item => )
    }
 
    function renderItems (arr){
-      const items = arr.map((item, index) => {
+      let array = []
+      arr.forEach(doc => {
+         array.push(doc.data())
+      })
+      const items = array.map((item, index) => {
             return(
                <li 
                   className="char__item"
                   key={item.id}>
                      <img  src={item.src} alt={item.title}/>
                      <div className="char__content">
-                        <div className="char__name">{item.title}</div>
+                        <div className="char__name">{item.title.length < 20 ? item.title : `${item.title.slice(0, 28)}...`}</div>
                         <div className="char__album">№{item.album}</div>
                      </div>
                      <div className='char__buttons'>
-                        <Link to={`/${item.id}`} className="char__button">details</Link>
-                        <button onClick={(e) => changeHeard(index)} className='char__add'>favorites</button>
+                        <Link onClick={() => dispatch(photoFetched(createdPhotos[index]))} to={`/${item.id}`} className="char__button">details</Link>
+                        <button ref={addBtn} onClick={(e) => addFavorite(index)} className='char__add'>favorites</button>
                      </div>
                </li>
             )
@@ -95,9 +126,9 @@ const MainPage = () => {
       )
    } 
 
-   const items = renderItems(createdPhotos)
+   const items = renderItems(photosList)
    const filterItems = renderItems(filterPhotosList)
-   console.log(filterPhotosList);
+   
    return(
       <div className='main-back'>
          <div className="char__list">

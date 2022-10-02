@@ -19,11 +19,11 @@ const Favorites = (e) => {
                <li 
                   className="char__item"
                   key={item.id}>
+                     <img  src={item.src} alt={item.title}/>
                      <div className="char__content">
                         <div className="char__name">{item.title}</div>
-                        <div className="char__album">№{item.albumId}</div>
+                        <div className="char__album">№{item.album}</div>
                      </div>
-                     <img  src={item.thumbnailUrl} alt={item.title}/>
                      <div className='char__buttons'>
                         <Link to={`/${item.id}`} className="char__button">details</Link>
                      </div>

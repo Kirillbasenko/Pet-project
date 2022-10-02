@@ -4,13 +4,16 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import {useEffect} from 'react';
+import {useEffect, useRef} from 'react';
+import {setUser} from "./userSlice"
 import "./loginPage.scss"
 
 const LoginPage = () => {
    const dispatch = useDispatch()
+   const {user} = useSelector(state => state.photos)
    
-   let user = localStorage.getItem("user") 
+   const error = useRef("")
+   const success = useRef("")
    let navigate = useNavigate()
    useEffect(() => {
       navigatePage()
@@ -35,9 +38,18 @@ const LoginPage = () => {
    const hendlerLodin = () => {
       const auth = getAuth()
       signInWithEmailAndPassword(auth, formik.values.email, formik.values.password)
-      .then(getUser)
-      .then(console.log(user))
-      .catch(console.error)
+      .then(({user}) => { 
+         getUser()
+         dispatch(setUser({ 
+               email: formik.values.email, 
+               id: user.uid, 
+               token: user.accessToken, 
+            })); 
+         success.current.style.display = "block"
+      })
+      .catch(() => {
+         error.current.style.display = "block"
+      });
    }
 
    const getUser = () => {
@@ -50,7 +62,6 @@ const LoginPage = () => {
             localStorage.setItem("user", false)
          }
       });
-      navigatePage()
    }
 
    const formik = useFormik({
@@ -68,7 +79,6 @@ const LoginPage = () => {
       }),
       onSubmit: hendlerLodin
    })
-   console.log(formik.values.email);
 
    return(
       <div className='back'>
@@ -93,6 +103,8 @@ const LoginPage = () => {
                      onBlur={formik.handleBlur}/>
                      {formik.errors.password && formik.touched.password  ? <div>{formik.errors.password}</div> : null}
                   <button type='submit'>login</button>
+                  <div ref={error} className="not-user">Пользователь не найден</div>
+                  <div ref={success} className="yes-user">Успешно</div>
                   <p className="message">Not registered? <Link to="/register">Create an account</Link></p>
                </form>
             </div>

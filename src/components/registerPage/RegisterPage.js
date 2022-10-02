@@ -4,26 +4,27 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import {userInside} from "../mainPage/photosSlice"
 import { useDispatch, useSelector } from "react-redux";
+import {useRef} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import "./registerPage.scss"
 
 const RegisterPage = () => {
    const dispatch = useDispatch()
    let navigate = useNavigate()
-   let user = localStorage.getItem("user") 
-   const hendlerRegister = (email, password) => {
+   const error = useRef("")
+   const success = useRef("")
+   const hendlerRegister = () => {
       const auth = getAuth()
       createUserWithEmailAndPassword(auth, formik.values.email, formik.values.password)
-      .then((userCredential) => {
-         const user = userCredential.user;
-         console.log(user);
+      .then(() => {
+         success.current.style.display = "block"
+         error.current.style.display = "none"
+         signInWithEmailAndPassword(auth, formik.values.email, formik.values.password)
+         getUser()
       })
-      .then(signInWithEmailAndPassword(auth, formik.values.email, formik.values.password))
-      .then(getUser)
-      //.then(user ? navigate("../main", { replace: true })  : console.log("лох"))
-      .catch((error) => {
-         console.log("Пошло по пизде");
-         console.log(error);
+      .catch(() => {
+         error.current.style.display = "block"
+         success.current.style.display = "none"
       });
    }
 
@@ -56,45 +57,6 @@ const RegisterPage = () => {
    })
 
    return(
-      /*<div className="login">
-         <div className="content">
-            <div className="login__title">Register</div>
-            <form onSubmit={formik.handleSubmit} className='form'>
-               <div className="mb-3 row">
-                  <label htmlFor="inputPassword" className="col-sm-2 col-htmlForm-label">Email</label>
-                  <div className="col-sm-10">
-                     <input 
-                        onChange={formik.handleChange} 
-                        value={formik.values.email} 
-                        name="email" 
-                        type="email" 
-                        className="htmlForm-control" 
-                        id="inputEmail"
-                        onBlur={formik.handleBlur}/>
-                        {formik.errors.email && formik.touched.email ? <div>{formik.errors.email}</div> : null}
-                  </div>
-               </div>
-               <div className="mb-3 row">
-                  <label htmlFor="inputPassword" className="col-sm-2 col-htmlForm-label">Password</label>
-                  <div className="col-sm-10"> 
-                     <input 
-                        onChange={formik.handleChange} 
-                        value={formik.values.password} 
-                        name="password" 
-                        type="password" 
-                        className="htmlForm-control" 
-                        id="inputPassword"
-                        onBlur={formik.handleBlur}/>
-                        {formik.errors.password && formik.touched.password  ? <div>{formik.errors.password}</div> : null}
-                  </div>
-               </div>
-               <div className="gfs center">
-                  <button type="submit" className="btn btn-success me-3">Success</button>
-                  <Link className="btn btn-success" to="/">Вход</Link>
-               </div>
-            </form>
-         </div>
-      </div>*/
       <div className="back">
          <div class="login-page">
             <div class="form">
@@ -118,6 +80,8 @@ const RegisterPage = () => {
                      onBlur={formik.handleBlur} 
                      placeholder="password"/>
                   <button>create</button>
+                  <div ref={error} className="not-user">Пользователь уже зерегистрирован</div>
+                  <div ref={success} className="yes-user">Успешно</div>
                   <p class="message">Already registered? <Link to="/login">Sign In</Link></p>
                </form>
             </div>
